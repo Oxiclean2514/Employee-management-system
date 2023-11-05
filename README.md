@@ -1,7 +1,9 @@
 # Python Employee Management System
  Simple command line python Employee management system that links to a mysql database
+ Just a fun little project for me to learn more in python and sql
+ Probably not the most elegant code, but any input regarding
+ bug fixing/optimization is appreciated
 
- Probably not the best code, but just a fun little project for me to learn more in python and sql
 
  ## Working Features
     - Login system
