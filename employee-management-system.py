@@ -98,7 +98,7 @@ while True:
     while loggedin == True:
         permissionlevel = sessiondetails[1]
         username = sessiondetails[2]
-        print("\nEmployee Management System v0.1")
+        print("\nEmployee Management System v1.0.0-alpha.1")
         print("For changelog type \"changelog\"")
         input()
 
