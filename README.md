@@ -13,7 +13,9 @@
     - Adding Employee records
     - Searching Employee records
     - Deleting Employee records
-    - Customisable system users
+    - Multiple, customisable system users
     - Setup page if no admin user is set
-    - Customisable permission levels (Read, Read-write etc.)
+    - Changeable permission levels (Read, Read-write etc.)
+    - System setup file to create required database+tables
+
     
