@@ -2,10 +2,6 @@
 from time import sleep
 import mysql
 import mysql.connector
-# Employee management system complete with system login
-# Created by Luca Bradbury
-# Error code index
-    # Error code 1: Failure connecting to database
 
 # Permission levels
     # 1 - Read
@@ -24,13 +20,10 @@ try:
     conn.start_transaction(isolation_level='READ COMMITTED')
 except mysql.connector.Error as err:
     # Displays error if connection unsuccessful
-    print("Error has occured. Error code 1. \nFor full error log, enter 1.")
-    if str(input()) == "1":
-        print(err)
-        input()
-        exit()
-    else:
-        exit()
+    print("Error has occured.")
+    print(err)
+    input()
+    exit()
 else:
     cursor = conn.cursor()
     print("Database connection successful.")
