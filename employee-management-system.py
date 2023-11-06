@@ -10,7 +10,6 @@ import mysql.connector
 # Attempts database connection
 try:
     print("Connecting to Database...")
-    sleep(1.2)
     conn = mysql.connector.connect(
         host = "localhost",
         user = "root",
