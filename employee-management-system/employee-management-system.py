@@ -153,8 +153,45 @@ def addrecords():
             print("Employee added successfully")
             sleep(0.2)
             return()
-        
 
+def searchrecords():
+    while True:
+        print("To search by name, enter \"Name\" \nTo search by position, enter \"Position\" \nTo go back to menu, type \"Back\"")
+        choice = input().lower()
+        if choice == "name":
+            print("Enter name of employee:")
+            cursor.reset()
+            name = input().lower()
+            sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (name)
+            cursor.execute(sql_query)
+            try:
+                userdetails = cursor.fetchone()
+                employeeid = userdetails[0]
+                fullname = userdetails[1]
+                age = userdetails[2]
+                position = userdetails[3]
+                salary = userdetails[4]
+            except:
+                print("No records found")
+                sleep(0.2)
+                return()
+            else:
+                print("1 record found")
+                sleep(0.2)
+                print("Record 1:")
+                sleep(0.2)
+                print("Employee ID: " + employeeid)
+                print("Name: " + fullname)
+                print("Age: " + age)
+                print("Position: " + position)
+                print("Salary:" + salary)
+                print("Enter any key to return to menu")
+                input()
+                return()
+        elif choice == "position":
+            print("Enter employees")
+        elif choice == "back":
+            return()
 
 while True:
     print("System Locked.")
