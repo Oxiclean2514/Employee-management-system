@@ -91,7 +91,7 @@ def login():
                 cursor.reset()
                 sql_query = "SELECT permissionlevel FROM system_logins WHERE username='%s'" % (username)
                 cursor.execute(sql_query)
-                permissionlevel = cursor.fetchone()
+                permissionlevel = cursor.fetchone()[0]
                 return(loggedin, permissionlevel, username)
             else:
                 print("Access Denied.")
@@ -180,16 +180,17 @@ def searchrecords():
                 sleep(0.2)
                 print("Record 1:")
                 sleep(0.2)
-                print("Employee ID: " + employeeid)
+                print("Employee ID: " + str(employeeid))
                 print("Name: " + fullname)
-                print("Age: " + age)
+                print("Age: " + str(age))
                 print("Position: " + position)
-                print("Salary:" + salary)
+                print("Salary: " + str(salary))
                 print("Enter any key to return to menu")
                 input()
                 return()
         elif choice == "position":
-            print("Enter employees")
+            print("Enter position of employees:")
+            cursor.reset()
         elif choice == "back":
             return()
 
@@ -203,14 +204,18 @@ while True:
         username = sessiondetails[2]
         print("\nEmployee Management System v1.0.0-alpha.2")
         print("To add records, please type 1")
+        print("To search existing records, type 2")
         print("To exit, please type 5")
         choice = str(input())
         if choice == "1":
             sleep(0.3)
-            if True: # Will add acceptance based on permission level at a future date
+            if permissionlevel > 1: # Will add acceptance based on permission level at a future date
                 addrecords()
             else:
                 print("Access Denied.")
+        if choice == "2":
+            sleep(0.2)
+            searchrecords()
         if choice == "5":
             sleep(0.2)
             exit()
