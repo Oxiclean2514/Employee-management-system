@@ -191,6 +191,9 @@ def searchrecords():
         elif choice == "position":
             print("Enter position of employees:")
             cursor.reset()
+            position = input().lower()
+            sql_query = "SELECT * FROM employees WHERE position='%s'" % (position)
+            cursor.execute(sql_query
         elif choice == "back":
             return()
 
