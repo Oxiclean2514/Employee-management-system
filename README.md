@@ -14,7 +14,7 @@
  ### To be added
     - Deleting Employee records
     - Multiple, customisable system users
-    - Changeable permission levels (Read, Read-write etc.)
+    - Fully customisable and editable permission levels (Read, Read-write etc.)
     - Option in setup file to add sample data to database
 
 

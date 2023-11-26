@@ -6,8 +6,10 @@ import bcrypt
 
 # Permission levels
     # 1 - Read
-    # 2 - Read-write
-    # 3 - 
+    # 2 - Read and edit
+    # 3 - Read, edit, manage system users
+    # 4 - Admin user (All perms from below, and can edit all system users including other admin users, rank level 3 cannot)
+    # 5 - root user
 
 # Enter MySQL password here
 dbpassword = ""
@@ -223,6 +225,15 @@ def searchrecords():
         elif choice == "back":
             return()
 
+def editrecords():
+    return()
+
+def deleterecords():
+    return()
+
+def manageusers(isadmin):
+    return()
+
 while True:
     print("System Locked.")
     sessiondetails = login()
@@ -234,7 +245,10 @@ while True:
         print("\nEmployee Management System v1.0.0")
         print("To add records, please type 1")
         print("To search existing records, type 2")
-        print("To exit, please type 5")
+        print("To edit existing records, type 3")
+        #print("To delete existing records, type 4")
+        #print("To manage system users, type 5")
+        print("To exit, type 6")
         choice = str(input())
         if choice == "1":
             sleep(0.3)
@@ -242,10 +256,34 @@ while True:
                 addrecords()
             else:
                 print("Access Denied.")
-        if choice == "2":
+        elif choice == "2":
             sleep(0.2)
-            searchrecords()
-        if choice == "5":
+            if permissionlevel > 0:
+                searchrecords()
+                sleep(0.2)
+            else:
+                print("Access Denied.")
+        elif choice == "3":
+            sleep(0.2)
+            if permissionlevel > 1:
+                editrecords()
+            else:
+                print("Access Denied.")
+        elif choice == "4":
+            sleep(0.2)
+            if permissionlevel > 1:
+                deleterecords()
+            else:
+                print("Access Denied.")
+        elif choice == "5":
+            if permissionlevel > 2:
+                if permissionlevel == 4:
+                    manageusers(True)
+                else:
+                    manageusers(False)
+            else:
+                print("Access Denied.")
+        elif choice == "6":
             sleep(0.2)
             exit()
 
