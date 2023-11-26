@@ -126,7 +126,7 @@ def addrecords():
                 else:
                     print("Age must be a number between 0 and 150")
         print("Enter employee's position:")
-        position = input()
+        position = input().lower()
         print("Enter employee's salary")
         valid = False
         while not valid:
@@ -181,9 +181,9 @@ def searchrecords():
                 print("Record 1:")
                 sleep(0.2)
                 print("Employee ID: " + str(employeeid))
-                print("Name: " + fullname)
+                print("Name: " + str(fullname))
                 print("Age: " + str(age))
-                print("Position: " + position)
+                print("Position: " + str(position))
                 print("Salary: " + str(salary))
                 print("Enter any key to return to menu")
                 input()
@@ -193,7 +193,33 @@ def searchrecords():
             cursor.reset()
             position = input().lower()
             sql_query = "SELECT * FROM employees WHERE position='%s'" % (position)
-            cursor.execute(sql_query
+            cursor.execute(sql_query)
+            Records = cursor.fetchall()
+            Noofrecords = cursor.rowcount
+            if Noofrecords > 0:
+                print(str(Noofrecords) + " Records Found")
+                print("Enter any key to see the first record")
+                input()
+                for i in range(Noofrecords):
+                    Currentrecord = Records[i]
+                    print("Record " + str(i+1) + " of " + str(Noofrecords))
+                    sleep(0.2)
+                    print("Employee ID: " + str(Currentrecord[0]))
+                    print("Name: " + str(Currentrecord[1]))
+                    print("Age: " + str(Currentrecord[2]))
+                    print("Position: " + str(Currentrecord[3]))
+                    print("Salary: " + str(Currentrecord[4]))
+                    if i < (Noofrecords-1):
+                        print("Enter any key to see the next record")
+                        input()
+                    else:
+                        print("Enter any key to return to menu")
+                        input()
+                        return()
+            elif Noofrecords == 0:
+                print("No records found")
+                sleep(0.2)
+                return()           
         elif choice == "back":
             return()
 
@@ -205,7 +231,7 @@ while True:
         # Initialize permissionlevel and username of session
         permissionlevel = sessiondetails[1] # Fix error of permissionlevel not being int
         username = sessiondetails[2]
-        print("\nEmployee Management System v1.0.0-alpha.2")
+        print("\nEmployee Management System v1.0.0")
         print("To add records, please type 1")
         print("To search existing records, type 2")
         print("To exit, please type 5")
