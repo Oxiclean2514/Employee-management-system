@@ -10,9 +10,10 @@
     - Login system
     - Adding Employee records
     - Searching Employee records
+    - Deleting Employee records
 
  ### To be added
-    - Deleting Employee records
+    - Editing Employee records
     - Multiple, customisable system users
     - Fully customisable and editable permission levels (Read, Read-write etc.)
     - Option in setup file to add sample data to database

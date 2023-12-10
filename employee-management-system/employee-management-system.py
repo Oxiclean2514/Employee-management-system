@@ -102,9 +102,15 @@ def login():
 def addrecords():
     print("Enter \"Back\" to return to menu.")
     print("Enter full employee name.")
-    fullname = input().lower()
-    if fullname == "back":
-        return()
+    valid = False
+    while not valid:
+        fullname = input().lower()
+        if fullname == "back":
+            return()
+        if type(fullname) == str:
+            valid = True
+        else:
+            print("Invalid input. Please try again.")
     # Fetches number of database entries for inputted name
     # Returns error if data found to avoid duplicate entries
     sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (fullname)
@@ -229,7 +235,35 @@ def editrecords():
     return()
 
 def deleterecords():
-    return()
+    print("Please enter the name of the employee whose record you wish to delete:")
+    employeeName = input().lower()
+    sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (employeeName)
+    cursor.reset()
+    cursor.execute(sql_query)
+    cursor.fetchone()
+    if cursor.rowcount == 0:
+        print("No record found.")
+        sleep(0.5)
+        return()
+    print("You are about to delete the employee record for " + employeeName + ". To confirm, please type \"Confirm\"")
+    cursor.reset()
+    if input().lower() == "confirm":
+        sql_query = "DELETE FROM employees WHERE fullname='%s'" % (employeeName)
+        try:
+            cursor.execute(sql_query)
+        except mysql.connector.Error as err:
+            conn.rollback()
+            print("Error deleting record.")
+            print("Error message: " + err)
+        else:
+            conn.commit()
+            print("Record deleted successfully.")
+            sleep(0.5)
+            return()
+    else:
+        print("Action cancelled.")
+        sleep(0.5)
+        return()
 
 def manageusers(isadmin):
     return()
@@ -245,8 +279,8 @@ while True:
         print("\nEmployee Management System v1.0.0")
         print("To add records, please type 1")
         print("To search existing records, type 2")
-        print("To edit existing records, type 3")
-        #print("To delete existing records, type 4")
+        #print("To edit existing records, type 3")
+        print("To delete existing records, type 4")
         #print("To manage system users, type 5")
         print("To exit, type 6")
         choice = str(input())
@@ -263,29 +297,32 @@ while True:
                 sleep(0.2)
             else:
                 print("Access Denied.")
-        elif choice == "3":
-            sleep(0.2)
-            if permissionlevel > 1:
-                editrecords()
-            else:
-                print("Access Denied.")
+        #elif choice == "3":
+        #    sleep(0.2)
+        #    if permissionlevel > 1:
+        #        editrecords()
+        #    else:
+        #        print("Access Denied.")
         elif choice == "4":
             sleep(0.2)
             if permissionlevel > 1:
                 deleterecords()
             else:
                 print("Access Denied.")
-        elif choice == "5":
-            if permissionlevel > 2:
-                if permissionlevel == 4:
-                    manageusers(True)
-                else:
-                    manageusers(False)
-            else:
-                print("Access Denied.")
+        #elif choice == "5":
+        #    if permissionlevel > 2:
+        #        if permissionlevel >= 4:
+        #            manageusers(True)
+        #        else:
+        #            manageusers(False)
+        #    else:
+        #        print("Access Denied.")
         elif choice == "6":
             sleep(0.2)
+            conn.close()
             exit()
+        else:
+            print("Invalid input. Please try again.")
 
 
 
