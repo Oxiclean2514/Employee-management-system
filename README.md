@@ -16,7 +16,7 @@
     - Editing Employee records
     - Multiple, customisable system users
     - Fully customisable and editable permission levels (Read, Read-write etc.)
-    - Option in setup file to add sample data to database
+    - Better comments throughout code
 
 
 ## First time installation procedure

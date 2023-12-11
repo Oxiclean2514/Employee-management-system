@@ -98,7 +98,8 @@ def login():
             else:
                 print("Access Denied.")
                 failurecounter = failurecounter + 1
-    
+
+# Allows user to add records  
 def addrecords():
     print("Enter \"Back\" to return to menu.")
     print("Enter full employee name.")
@@ -162,6 +163,7 @@ def addrecords():
             sleep(0.2)
             return()
 
+# Allows user to search through records
 def searchrecords():
     while True:
         print("To search by name, enter \"Name\" \nTo search by position, enter \"Position\" \nTo go back to menu, type \"Back\"")
@@ -231,9 +233,101 @@ def searchrecords():
         elif choice == "back":
             return()
 
-def editrecords():
-    return()
+# Function to update information in a record
+def updaterecords(employeeid, detailToUpdate, newInfo):
+    employeeid = int(employeeid)
+    sql_query = "UPDATE employees SET %s = '%s' WHERE employeeid = '%s'" % (detailToUpdate, newInfo, employeeid)
+    cursor.reset()
+    try:
+        cursor.execute(sql_query)
+    except mysql.connector.Error as err:
+        conn.rollback()
+        print(err)
+        return(False)
+    else:
+        conn.commit()
+        return(True)
 
+# Allows user to edit records
+def editrecords():
+    print("Please enter the employee id of the employee whose record you would like to edit")
+    print("Type \"Back\" to return to menu.")
+    employeeid = str(input().lower())
+    sql_query = "SELECT * FROM employees WHERE employeeid='%s'" % (employeeid)
+    cursor.reset()
+    cursor.execute(sql_query)
+    details = cursor.fetchone()
+    if employeeid == "back":
+        sleep(0.2)
+        return()
+    elif cursor.rowcount == 0:
+        print("No record found.")
+        sleep(0.5)
+        return()
+    employeename = details[1]
+    age = str(details[2])
+    position = details[3]
+    salary = str(details[4])
+    print("You are editing the employee record of: "+employeename)
+    while True:
+        print("What would you like to update?\nFor name type 1\nFor age type 2\nFor position type 3\nFor salary type 4\nTo return to menu type \"Back\"")
+        choice = str(input())
+        if choice == "1":
+            print("Current employee name is: "+employeename)
+            print("Please enter new employee name:")
+            newInfo = input().lower()
+            successful = updaterecords(employeeid, "fullname", newInfo)
+            if successful:
+                print("Record successfully updated")
+                employeename = newInfo
+                sleep(0.5)
+            elif not successful:
+                print("Error updating record. Please try again later.")
+                sleep(0.5)
+        elif choice == "2":
+            print("Current employee age is: "+age)
+            print("Please enter new employee age:")
+            newInfo = input().lower()
+            successful = updaterecords(employeeid, "age", newInfo)
+            if successful:
+                print("Record successfully updated")
+                age = str(newInfo)
+                sleep(0.5)
+            elif not successful:
+                print("Error updating record. Please try again later.")
+                sleep(0.5)
+        elif choice == "3":
+            print("Current employee position is: "+position)
+            print("Please enter new employee position:")
+            newInfo = input().lower()
+            successful = updaterecords(employeeid, "position", newInfo)
+            if successful:
+                print("Record successfully updated")
+                position = newInfo
+                sleep(0.5)
+            elif not successful:
+                print("Error updating record. Please try again later.")
+                sleep(0.5)
+        elif choice == "4":
+            print("Current employee salary is: "+salary)
+            print("Please enter new employee salary:")
+            newInfo = input().lower()
+            successful = updaterecords(employeeid, "salary", newInfo)
+            if successful:
+                print("Record successfully updated")
+                salary = str(newInfo)
+                sleep(0.5)
+            elif not successful:
+                print("Error updating record. Please try again later.")
+                sleep(0.5)
+        elif choice == "back":
+            sleep(0.2)
+            return()
+        else:
+            print("Invalid input. Please try again.")
+            sleep(0.3)
+
+# Allows user to delete records
 def deleterecords():
     print("Please enter the name of the employee whose record you wish to delete:")
     employeeName = input().lower()
@@ -279,7 +373,7 @@ while True:
         print("\nEmployee Management System v1.0.0")
         print("To add records, please type 1")
         print("To search existing records, type 2")
-        #print("To edit existing records, type 3")
+        print("To edit existing records, type 3")
         print("To delete existing records, type 4")
         #print("To manage system users, type 5")
         print("To exit, type 6")
@@ -297,12 +391,12 @@ while True:
                 sleep(0.2)
             else:
                 print("Access Denied.")
-        #elif choice == "3":
-        #    sleep(0.2)
-        #    if permissionlevel > 1:
-        #        editrecords()
-        #    else:
-        #        print("Access Denied.")
+        elif choice == "3":
+            sleep(0.2)
+            if permissionlevel > 1:
+                editrecords()
+            else:
+                print("Access Denied.")
         elif choice == "4":
             sleep(0.2)
             if permissionlevel > 1:
