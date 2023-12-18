@@ -3,6 +3,7 @@ from time import sleep
 import mysql
 import mysql.connector
 import bcrypt
+from secrets import compare_digest
 
 # Permission levels
     # 1 - Read
@@ -86,7 +87,7 @@ def login():
         else:
             hashedpassword = rehashpassword(password, fetchedhashed)
             # If password is correct, grant access and return session details, else deny access
-            if hashedpassword == fetchedhashed:
+            if compare_digest(fetchedhashed, hashedpassword):
                 print("Access granted. \nLogged in as %s" % (username))
                 sleep(0.8)
                 loggedin = True
@@ -370,7 +371,7 @@ while True:
         # Initialize permissionlevel and username of session
         permissionlevel = sessiondetails[1] # Fix error of permissionlevel not being int
         username = sessiondetails[2]
-        print("\nEmployee Management System v1.0.0")
+        print("\nEmployee Management System v1.0.1")
         print("To add records, please type 1")
         print("To search existing records, type 2")
         print("To edit existing records, type 3")
