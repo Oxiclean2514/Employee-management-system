@@ -4,7 +4,7 @@ import mysql
 import mysql.connector
 import bcrypt
 from secrets import compare_digest
-from .setup import databaseSetup
+from setup import databaseSetup
 
 # Permission levels
     # 1 - Read
