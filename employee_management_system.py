@@ -395,7 +395,7 @@ while True:
         # Initialize permissionlevel and username of session
         permissionlevel = sessiondetails[1] # Fix error of permissionlevel not being int
         username = sessiondetails[2]
-        print("\nEmployee Management System v1.1.0")
+        print("\nEmployee Management System v1.1.1")
         print("To add records, please type 1")
         print("To search existing records, type 2")
         print("To edit existing records, type 3")
