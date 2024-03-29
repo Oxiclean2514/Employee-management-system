@@ -13,6 +13,7 @@
     - Deleting Employee records
 
  ### To be added
+    - Migrate to MongoDB
     - Editing Employee records
     - Multiple, customisable system users
     - Fully customisable and editable permission levels (Read, Read-write etc.)
