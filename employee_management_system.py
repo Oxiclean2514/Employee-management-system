@@ -101,12 +101,9 @@ def addrecords():
             print("Invalid input. Please try again.")
     # Fetches number of database entries for inputted name
     # Returns error if data found to avoid duplicate entries
-    sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (fullname)
-    cursor.execute(sql_query)
-    cursor.fetchone()
-    if cursor.rowcount == 1:
+    query = { "fullname": fullname }
+    if employees.find_one(query) == None:
         print("Error: Employee already exists")
-        cursor.reset()
         return()
     else:
         print("Enter employee age:")
@@ -137,15 +134,12 @@ def addrecords():
                     print("Salary must be a number above 0")
         salary = round(salary, 2)
         try:
-            sql_query = "INSERT INTO employees (fullname, age, position, salary) VALUES ('%s', '%s', '%s', '%s')" % (fullname, age, position, salary)
-            cursor.execute(sql_query)
-        except mysql.connector.Error as err:
-            conn.rollback()
+            query = { "fullname": fullname, "age": age, "position": position, "salary": salary }
+            employees.insert_one(query)
+        except:
             print("Error occured adding employee")
-            print(err)
             return()
         else:
-            conn.commit()
             print("Employee added successfully")
             sleep(0.2)
             return()
@@ -316,26 +310,19 @@ def editrecords():
 def deleterecords():
     print("Please enter the name of the employee whose record you wish to delete:")
     employeeName = input().lower()
-    sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (employeeName)
-    cursor.reset()
-    cursor.execute(sql_query)
-    cursor.fetchone()
-    if cursor.rowcount == 0:
+    query = { "fullname": employeeName }
+    if employees.find_one(query) == None:
         print("No record found.")
         sleep(0.5)
         return()
     print("You are about to delete the employee record for " + employeeName + ". To confirm, please type \"Confirm\"")
-    cursor.reset()
     if input().lower() == "confirm":
-        sql_query = "DELETE FROM employees WHERE fullname='%s'" % (employeeName)
+        query = { "fullname": employeeName }
         try:
-            cursor.execute(sql_query)
-        except mysql.connector.Error as err:
-            conn.rollback()
+            employees.delete_one(query)
+        except:
             print("Error deleting record.")
-            print("Error message: " + err)
         else:
-            conn.commit()
             print("Record deleted successfully.")
             sleep(0.5)
             return()
