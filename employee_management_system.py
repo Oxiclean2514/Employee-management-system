@@ -1,10 +1,12 @@
 # Importing modules
 from time import sleep
-import mysql
-import mysql.connector
+import pymongo
+from os import getenv
+from dotenv import load_dotenv
 import bcrypt
 from secrets import compare_digest
-from setup import databaseSetup
+# Initialize .env file
+load_dotenv()
 
 # Permission levels
     # 1 - Read
@@ -13,51 +15,16 @@ from setup import databaseSetup
     # 4 - Admin user (All perms from below, and can edit all system users including other admin users, rank level 3 cannot)
     # 5 - root user
 
-# Enter MySQL password here
-dbpassword = ""
-
-# Attempts MySQL connection
+# Attempts MongoDB connection
 try:
-    print("Connecting to MySQL...")
-    conn = mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = dbpassword,
-    )
-except mysql.connector.Error as err:
-    # Displays error if connection unsuccessful
-    print("Error has occured connecting to mysql.")
-    print(err)
-    input()
-    exit()
+    url = getenv("MONGOKEY")
+    client = pymongo.MongoClient(url)
+    db = client["ManagementSystem"]
+    employees = db["employees"]
+    logins = db["logins"]
+except:
+    print("Error occured connecting to database.")
 else:
-    cursor = conn.cursor()
-
-# Checks for existing database, if one isnt found sets one up
-sql_query = "SHOW DATABASES LIKE 'employee_management'"
-cursor.execute(sql_query)
-db = cursor.fetchone()
-if db == None:
-    databaseSetup()
-
-# Attempts database connection
-try:
-    print("Connecting to Database...")
-    conn = mysql.connector.connect(
-        host = "localhost",
-        user = "root",
-        password = dbpassword,
-        database = "employee_management"
-    )
-    conn.start_transaction(isolation_level='READ COMMITTED')
-except mysql.connector.Error as err:
-    # Displays error if connection unsuccessful
-    print("Error has occured.")
-    print(err)
-    input()
-    exit()
-else:
-    cursor = conn.cursor()
     print("Database connection successful.")
 
 # Function for hashing a password
@@ -93,19 +60,17 @@ def login():
             sleep(1)
             exit()
         # Prompts for username and password
-        cursor.reset()
         print("Please enter your username:")
         username = input().lower()
         print("Please enter your password:")
         password = input()
         # Fetches hashed password and salt from database
-        sql_query = "SELECT passwordhash FROM system_logins WHERE username='%s'" % (username)
-        cursor.execute(sql_query)
+        query = { "username": username }
+        document = logins.find_one(query,{ "password": 1, "permissionlevel": 1})
         # Checks if username is valid, if not returns access denied
         try:
-            fetchedhashed = cursor.fetchone()
-            fetchedhashed = fetchedhashed[0]
-        except TypeError:
+            fetchedhashed = document["password"]
+        except:
             print("Access Denied.")
             failurecounter = failurecounter + 1
         else:
@@ -115,10 +80,7 @@ def login():
                 print("Access granted. \nLogged in as %s" % (username))
                 sleep(0.8)
                 loggedin = True
-                cursor.reset()
-                sql_query = "SELECT permissionlevel FROM system_logins WHERE username='%s'" % (username)
-                cursor.execute(sql_query)
-                permissionlevel = cursor.fetchone()[0]
+                permissionlevel = document["permissionlevel"]
                 return(loggedin, permissionlevel, username)
             else:
                 print("Access Denied.")
@@ -195,17 +157,15 @@ def searchrecords():
         choice = input().lower()
         if choice == "name":
             print("Enter name of employee:")
-            cursor.reset()
             name = input().lower()
-            sql_query = "SELECT * FROM employees WHERE fullname='%s'" % (name)
-            cursor.execute(sql_query)
+            query = { "fullname": name }
             try:
-                userdetails = cursor.fetchone()
-                employeeid = userdetails[0]
-                fullname = userdetails[1]
-                age = userdetails[2]
-                position = userdetails[3]
-                salary = userdetails[4]
+                userdetails = employees.find_one(query)
+                employeeid = userdetails["employeeId"]
+                fullname = userdetails["fullname"]
+                age = userdetails["age"]
+                position = userdetails["position"]
+                salary = userdetails["salary"]
             except:
                 print("No records found")
                 sleep(0.2)
@@ -224,13 +184,13 @@ def searchrecords():
                 input()
                 return()
         elif choice == "position":
+            Records = []
             print("Enter position of employees:")
-            cursor.reset()
             position = input().lower()
-            sql_query = "SELECT * FROM employees WHERE position='%s'" % (position)
-            cursor.execute(sql_query)
-            Records = cursor.fetchall()
-            Noofrecords = cursor.rowcount
+            query = { "position": position }
+            for x in employees.find({"position":position}):
+                Records.append(x)
+            Noofrecords = len(Records)
             if Noofrecords > 0:
                 print(str(Noofrecords) + " Records Found")
                 print("Enter any key to see the first record")
@@ -239,11 +199,11 @@ def searchrecords():
                     Currentrecord = Records[i]
                     print("Record " + str(i+1) + " of " + str(Noofrecords))
                     sleep(0.2)
-                    print("Employee ID: " + str(Currentrecord[0]))
-                    print("Name: " + str(Currentrecord[1]))
-                    print("Age: " + str(Currentrecord[2]))
-                    print("Position: " + str(Currentrecord[3]))
-                    print("Salary: " + str(Currentrecord[4]))
+                    print("Employee ID: " + str(Currentrecord["employeeId"]))
+                    print("Name: " + str(Currentrecord["fullname"]))
+                    print("Age: " + str(Currentrecord["age"]))
+                    print("Position: " + str(Currentrecord["position"]))
+                    print("Salary: " + str(Currentrecord["salary"]))
                     if i < (Noofrecords-1):
                         print("Enter any key to see the next record")
                         input()
