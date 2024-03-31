@@ -215,16 +215,14 @@ def searchrecords():
 # Function to update information in a record
 def updaterecords(employeeid, detailToUpdate, newInfo):
     employeeid = int(employeeid)
-    sql_query = "UPDATE employees SET %s = '%s' WHERE employeeid = '%s'" % (detailToUpdate, newInfo, employeeid)
-    cursor.reset()
+    query = { "employeeId": employeeid }
+    newvalues = { "$set": { detailToUpdate: newInfo } }
     try:
-        cursor.execute(sql_query)
-    except mysql.connector.Error as err:
-        conn.rollback()
-        print(err)
+        employees.update_one(query, newvalues)
+    except:
+        print("Error occured")
         return(False)
     else:
-        conn.commit()
         return(True)
 
 # Allows user to edit records
@@ -232,21 +230,19 @@ def editrecords():
     print("Please enter the employee id of the employee whose record you would like to edit")
     print("Type \"Back\" to return to menu.")
     employeeid = str(input().lower())
-    sql_query = "SELECT * FROM employees WHERE employeeid='%s'" % (employeeid)
-    cursor.reset()
-    cursor.execute(sql_query)
-    details = cursor.fetchone()
+    query = { "employeeId": employeeid }
+    document = employees.find_one(query)
     if employeeid == "back":
         sleep(0.2)
         return()
-    elif cursor.rowcount == 0:
+    elif document == None:
         print("No record found.")
         sleep(0.5)
         return()
-    employeename = details[1]
-    age = str(details[2])
-    position = details[3]
-    salary = str(details[4])
+    employeename = document["fullname"]
+    age = str(document["age"])
+    position = document["position"]
+    salary = str(document["salary"])
     print("You are editing the employee record of: "+employeename)
     while True:
         print("What would you like to update?\nFor name type 1\nFor age type 2\nFor position type 3\nFor salary type 4\nTo return to menu type \"Back\"")
