@@ -102,7 +102,7 @@ def addrecords():
     # Fetches number of database entries for inputted name
     # Returns error if data found to avoid duplicate entries
     query = { "fullname": fullname }
-    if employees.find_one(query) == None:
+    if employees.find_one(query) != None:
         print("Error: Employee already exists")
         return()
     else:
@@ -338,7 +338,7 @@ while True:
         # Initialize permissionlevel and username of session
         permissionlevel = sessiondetails[1] # Fix error of permissionlevel not being int
         username = sessiondetails[2]
-        print("\nEmployee Management System v1.1.1")
+        print("\nEmployee Management System v2.0.0")
         print("To add records, please type 1")
         print("To search existing records, type 2")
         print("To edit existing records, type 3")
@@ -381,7 +381,6 @@ while True:
         #        print("Access Denied.")
         elif choice == "6":
             sleep(0.2)
-            conn.close()
             exit()
         else:
             print("Invalid input. Please try again.")
