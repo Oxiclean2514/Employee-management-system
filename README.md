@@ -11,9 +11,8 @@
     - Adding Employee records
     - Searching Employee records
     - Deleting Employee records
+    - Editing Employee records
 
  ### To be added
-    - Editing Employee records
     - Multiple, customisable system users
     - Fully customisable and editable permission levels (Read, Read-write etc.)
-    - Better comments throughout code
